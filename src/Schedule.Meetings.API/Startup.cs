@@ -23,7 +23,6 @@ namespace Schedule.Meetings.API
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddEntityFrameworkSqlServer()
@@ -33,6 +32,7 @@ namespace Schedule.Meetings.API
             services.AddSwaggerGeneration();
             services.AddApiVersioningAndExplorer();
 
+            services.AddCors();
             services.AddSwaggerGen(c => c.EnableAnnotations());
             services.AddHealthChecks();
             services.ConfigureFluentValidation();
@@ -48,6 +48,11 @@ namespace Schedule.Meetings.API
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors(options => options.WithOrigins("http://localhost:3000/")
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+             
             app.UseRouting();
 
             app.UseEndpoints(options =>

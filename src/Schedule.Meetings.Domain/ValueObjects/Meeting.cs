@@ -13,6 +13,20 @@ namespace Schedule.Meetings.Domain.ValueObjects
             if (scheduledMeetings == null || !scheduledMeetings.Any())
                 return true;
 
+            var meetingAvailable = GetAvailablePeriod(scheduledMeetings);
+
+            return meetingAvailable.Any(x => start >= x.MeetingStart && end <= x.MeetingEnd);
+        }
+
+        public static bool MinimumTime(TimeSpan x, TimeSpan y)
+        {
+            var minimumTime = new TimeSpan(0, 5, 0);
+
+            return (x - y) > minimumTime;
+        }
+
+        public static List<ScheduleMeetings> GetAvailablePeriod(List<ScheduleMeetings> scheduledMeetings)
+        {
             scheduledMeetings = scheduledMeetings.OrderBy(x => x.MeetingStart).ToList();
             var meetingAvailable = new List<ScheduleMeetings>();
             var currentTime = DateTime.Now.ToTimeSpan();
@@ -35,14 +49,7 @@ namespace Schedule.Meetings.Domain.ValueObjects
                 previousMeetingEnd = item.MeetingEnd;
             }
 
-            return meetingAvailable.Any(x => start >= x.MeetingStart && end <= x.MeetingEnd);
-        }
-
-        public static bool MinimumTime(TimeSpan x, TimeSpan y)
-        {
-            var minimumTime = new TimeSpan(0, 5, 0);
-
-            return (x - y) > minimumTime;
+            return meetingAvailable;
         }
     }
 }
