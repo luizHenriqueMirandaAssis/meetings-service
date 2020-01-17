@@ -1,6 +1,7 @@
 ﻿using Schedule.Meetings.Application.Interfaces;
 using Schedule.Meetings.Application.Models;
 using Schedule.Meetings.Domain.Entities;
+using Schedule.Meetings.Domain.Helpers;
 using Schedule.Meetings.Domain.Interfaces.Repositories;
 using Schedule.Meetings.Domain.ValueObjects;
 using System;
@@ -33,6 +34,22 @@ namespace Schedule.Meetings.Application.Services
                 #region Validations
 
                 var response = ResponseModel.Empty();
+
+                #region Validate model
+
+                if (model.Date.Date < DateTime.Today)
+                    response.AddError($"Deve-se marcar a reunião apartir da data de {DateTime.Today.ToString("dd/MM/yyyy")}");
+
+                if (model.Date.Date == DateTime.Today && model.Start < DateTime.Now.ToTimeSpan())
+                    response.AddError("Hora início da reunião deve ser maior que a hora atual");
+
+                if (model.End <= model.Start)
+                    response.AddError("Hora final da reunião deve ser maior que a hora de início");
+
+                if (response.IsNotValid())
+                    return response;
+
+                #endregion
 
                 if (!_roomsRepository.Exists(model.RoomId))
                     response.AddError("Sala não encontrada");

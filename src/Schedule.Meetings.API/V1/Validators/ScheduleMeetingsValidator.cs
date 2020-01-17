@@ -1,7 +1,5 @@
 ﻿using FluentValidation;
 using Schedule.Meetings.Application.Models;
-using Schedule.Meetings.Domain.Helpers;
-using System;
 
 namespace Schedule.Meetings.API.V1.Validators
 {
@@ -17,18 +15,15 @@ namespace Schedule.Meetings.API.V1.Validators
 
             RuleFor(x => x.Date)
                 .NotNull()
-                .NotEmpty()
-                .GreaterThan(DateTime.Today.AddDays(-1));
+                .NotEmpty();
 
             RuleFor(x => x.Start)
                 .NotNull()
-                .NotEmpty()
-                .GreaterThan(DateTime.Now.ToTimeSpan());
+                .NotEmpty();
 
             RuleFor(e => e.End)
                 .NotNull()
-                .NotEmpty()
-                .GreaterThan(y => y.Start);
+                .NotEmpty();
 
             RuleFor(e => e.UserId)
                 .NotNull()

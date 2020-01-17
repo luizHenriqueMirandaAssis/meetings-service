@@ -101,6 +101,7 @@ namespace Schedule.Meetings.Domain.Test
                new Rooms(){RoomId = 2}
             };
 
+            var hourCurrent = DateTime.Now.ToTimeSpan();
             var scheduleMeetings = new List<ScheduleMeetings>()
             {
                 new ScheduleMeetings()
@@ -108,8 +109,8 @@ namespace Schedule.Meetings.Domain.Test
                     RoomId = 1,
                     UserId = 1,
                     MeetingDate = DateTime.Today,
-                    MeetingStart = new TimeSpan(6,30,0),
-                    MeetingEnd = new TimeSpan(7,30,0)
+                    MeetingStart = new TimeSpan(hourCurrent.Hours,10,0),
+                    MeetingEnd = new TimeSpan(hourCurrent.Hours,50,0),
                 },
 
                 new ScheduleMeetings()
@@ -117,8 +118,8 @@ namespace Schedule.Meetings.Domain.Test
                     RoomId = 1,
                     UserId = 1,
                     MeetingDate = DateTime.Today,
-                    MeetingStart = new TimeSpan(9, 30, 0),
-                    MeetingEnd = new TimeSpan(10, 30, 0)
+                    MeetingStart = new TimeSpan(hourCurrent.AddMinutes(60).Hours,10,0),
+                    MeetingEnd = new TimeSpan(hourCurrent.AddMinutes(120).Hours,50,0),
                 }
            };
 
@@ -133,18 +134,17 @@ namespace Schedule.Meetings.Domain.Test
         }
         public static IEnumerable<object[]> GetNotValidPeriod()
         {
-            yield return new object[] { DateTimeHelper.NewTime(5, 40), DateTimeHelper.NewTime(6, 40) };
-            yield return new object[] { DateTimeHelper.NewTime(6, 40), DateTimeHelper.NewTime(7, 20) };
-            yield return new object[] { DateTimeHelper.NewTime(7, 40), DateTimeHelper.NewTime(10, 40) };
-            yield return new object[] { DateTimeHelper.NewTime(10, 25), DateTimeHelper.NewTime(12, 40) };
+            var hourCurrent = DateTime.Now.ToTimeSpan();
+
+            yield return new object[] { DateTimeHelper.NewTime(hourCurrent.Hours, 10), DateTimeHelper.NewTime(hourCurrent.Hours, 20) };
+            yield return new object[] { DateTimeHelper.NewTime(hourCurrent.AddMinutes(60).Hours, 20), DateTimeHelper.NewTime(hourCurrent.AddMinutes(60).Hours, 30) };
         }
         public static IEnumerable<object[]> GetValidPeriod()
         {
-            yield return new object[] { DateTimeHelper.NewTime(7, 40),  DateTimeHelper.NewTime(9, 20) };
-            yield return new object[] { DateTimeHelper.NewTime(10, 40), DateTimeHelper.NewTime(11, 20) };
-            yield return new object[] { DateTimeHelper.NewTime(12, 40), DateTimeHelper.NewTime(13, 20) };
-            yield return new object[] { DateTimeHelper.NewTime(14, 40), DateTimeHelper.NewTime(15, 20) };
-            yield return new object[] { DateTimeHelper.NewTime(16, 40), DateTimeHelper.NewTime(18, 20) };
+            var hourCurrent = DateTime.Now.ToTimeSpan();
+
+            yield return new object[] { DateTimeHelper.NewTime(hourCurrent.AddMinutes(240).Hours, 10), DateTimeHelper.NewTime(hourCurrent.AddMinutes(240).Hours, 50) };
+            yield return new object[] { DateTimeHelper.NewTime(hourCurrent.AddMinutes(300).Hours, 20), DateTimeHelper.NewTime(hourCurrent.AddMinutes(300).Hours, 30) };
         }
 
         #endregion
